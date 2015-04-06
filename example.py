@@ -26,7 +26,10 @@ def main():
 	#Epoch time
 	cur_epoch_time = calendar.timegm(t.strptime(cur_time_formed, '%Y-%m-%d %H:%M:%S'))
 	#12 am this day. Do not run cron anywhere between 11:40p and 12:01a whatever time zone you're working in. Unless changed, we're using UTC
-	today_midn = Decimal(cur_time) % 86400 - cur_time   
+	today_midn = Decimal(cur_time) % 86400 - cur_time
+	#Tbh, I could just manually populate the table using sleep for the api limit issue, and then run the script on the hour. 
+	#It'll just mean you can never test the script because testing the script will create dupes.
+	#Or run the script for all data since Urf mode was released and use sleeps
 	
 
 
