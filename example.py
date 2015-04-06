@@ -29,7 +29,8 @@ def main():
 	today_midn = Decimal(cur_time) % 86400 - cur_time
 	#Tbh, I could just manually populate the table using sleep for the api limit issue, and then run the script on the hour. 
 	#It'll just mean you can never test the script because testing the script will create dupes.
-	#Or run the script for all data since Urf mode was released and use sleeps
+	#Or run the script for all data since Urf mode was released, using latest database timestamp if the database table is not empty
+	#and use sleeps to bypass api limit issue
 	
 
 
