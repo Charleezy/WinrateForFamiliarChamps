@@ -30,6 +30,7 @@ USE `riot`;
 
 CREATE TABLE IF NOT EXISTS `urf_matches` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `timestamp` int(11) NOT NULL COMMENT 'epoch timestamp',
   `matchid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
