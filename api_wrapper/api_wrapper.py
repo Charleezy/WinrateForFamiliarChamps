@@ -33,6 +33,13 @@ class MaxReqsException(Exception):
 
 class ApiWrapper(object):
 
+    """
+    Contains a priority queue called self.request_queue. Excepts items to be
+    pushed onto this queue of the form (request_priority(int), url, callback)
+    Once the request is completed it pushes (data, callback) onto self.result_queue.
+    Items are expected to be pulled off this queue.
+    """
+
     def __init__(self):
         self.lock = threading.Lock()
 
