@@ -9,7 +9,7 @@ import threading
 import queue
 
 
-SHORT_TIME_LIMIT = 10.5
+SHORT_TIME_LIMIT = 11
 SHORT_MAX_REQUESTS = 10
 
 LONG_TIME_LIMIT = 605
@@ -132,6 +132,33 @@ class ApiWrapper(object):
         data = json.loads(f.read().decode('utf-8'))
         return data
 
+    def api_call(self, url, priority=10, callback=None):
+        """ If callback is specified the call will be added to a priority
+            queue with the highest priority being HIGHEST_PRIORITY. When
+            it is completed it will be pushed onto self.result_queue and can
+            popped off at any time.
+            If callback is not specified this funtion will be block until it
+            it gets a response and will then return the data
+            The rate limiting logic is able to handle both types of queries
+            in conjunction.
+        """
+        if callback is not None:
+            priority = max(HIGHEST_PRIORITY, priority)
+            self.request_queue.put((priority, url, callback))
+            return None
+
+        while True:
+            timeleft = self._constraint_check()
+            if timeleft > 0:
+                time.sleep(timeleft)
+            else:
+                break
+        try:
+            data = self.issue_api_call(url)
+        except MaxReqsException:
+            # make another call if we've timed out for some reason
+            return self.api_call(url)
+        return data
 
 if __name__ == '__main__':
     for _ in range(4):
