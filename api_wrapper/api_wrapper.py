@@ -1,5 +1,5 @@
+from urllib.parse import urlencode
 import urllib.request
-import urllib.error
 from urllib.error import HTTPError
 from API_KEY import API_KEY
 import time
@@ -20,6 +20,8 @@ MAX_REQUEST_HTTP_CODE = 429
 HIGHEST_PRIORITY = 0
 
 NUM_THREADS = 10
+
+BASE_URL = 'https://na.api.pvp.net/api/lol/na'
 
 
 class MaxReqsException(Exception):
@@ -159,6 +161,11 @@ class ApiWrapper(object):
             # make another call if we've timed out for some reason
             return self.api_call(url)
         return data
+
+    @staticmethod
+    def game_by_summoner(sid):
+        parms = urlencode({'api_key': API_KEY})
+        return '{0}/v1.3/game/by-summoner/{1}/recent?{2}'.format(BASE_URL, sid, parms)
 
 if __name__ == '__main__':
     for _ in range(4):
