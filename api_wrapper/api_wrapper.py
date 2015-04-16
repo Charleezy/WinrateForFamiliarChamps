@@ -134,5 +134,5 @@ class ApiWrapper(object):
 
 
 if __name__ == '__main__':
-    for _ in range(4):
+    for _ in range(20):
         print(ApiWrapper.issue_api_call('https://na.api.pvp.net/api/lol/na/v1.2/champion/102?api_key={0}'.format(API_KEY, )))
