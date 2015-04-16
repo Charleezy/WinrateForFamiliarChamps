@@ -32,7 +32,12 @@ class ApiCaller(object):
 if __name__ == '__main__':
     ac = ApiCaller()
     # 22 requests
+    print('===========Callback Test==========')
     for _ in range(22):
-        ac.api.request_queue.put((5, 'https://na.api.pvp.net/api/lol/na/v1.2/champion/102?api_key={0}'.format(API_KEY, ), print))
+        ac.api.api_call(url='https://na.api.pvp.net/api/lol/na/v1.2/champion/102?api_key={0}'.format(API_KEY, ), priority=5, callback=print)
+
+    print('===========Blocking Test==========')
+    for _ in range(15):
+        print(ac.api.api_call(url='https://na.api.pvp.net/api/lol/na/v1.2/champion/102?api_key={0}'.format(API_KEY, )))
     ac.api.request_queue.join()
     ac.api.result_queue.join()
