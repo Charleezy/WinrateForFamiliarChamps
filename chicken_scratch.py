@@ -4,9 +4,9 @@ import numpy as np
 matches = pd.read_csv("matches.csv")
 
 #learning merging columns
- df = pd.DataFrame(np.random.randn(10, 4), columns=['a', 'b', 'c', 'd'], index=rands_array(5, 10))
+ #df = pd.DataFrame(np.random.randn(10, 4), columns=['a', 'b', 'c', 'd'], index=rands_array(5, 10))
 #Docs here suck. They're way generic for n dimensional space
-http://pandas.pydata.org/pandas-docs/stable/merging.html
+#http://pandas.pydata.org/pandas-docs/stable/merging.html
 
 #so pandas doesn't do cbind as easily.
 #You can cbind here but you're left with useless rows.
@@ -48,10 +48,10 @@ for i in range(0,len(champs.index)):
 #########################START SECTION for each champion loop############################# 
 #group by again, this time with count as index for champion x, and avg(avg) as column
 
-kayle = matchesGroupedDF[matchesGroupedDF.champ_id==7]
-kayle2 = kayle.set_index('champ_id')
-kayleGrouped = kayle2.groupby(['count'])
-kayleGrouped.mean()	
+leblanc = matchesGroupedDF[matchesGroupedDF.champ_id==7]
+leblanc2 = leblanc.set_index('champ_id')
+leblancGrouped = leblanc2.groupby(['count'])
+leblancGrouped.mean()	
 #########################END SECTION count, average by champ_id#############################
 
 
@@ -64,4 +64,51 @@ data = Data([Histogram(x=kayleGrouped.mean().reset_index()['count'].values, y=  
 plot_url = py.plot(data, filename='kayle-histogram')
 ##################START PLOTLY#######################################################
 
-#I don't think plotly allows you to change themes on your own. Back to looking for visualization libraries. We did a lot today though :)
+#I don't think plotly allows you to change themes on your own. Back to looking for visualization libraries.
+#You can manually edit every plot though. That'll work
+
+
+################################START HTML TABLE#####################################
+#A way to make html tables from python
+#Even if we don't do plots an html table is necessary
+#If you use a library try to use one that supports tag attributes. So it can't be a generic one just for tables. This way we can programmatically apply styles like bootstrap.
+#http://www.decalage.info/python/html only for python 2.7
+#Games Played ->	#1		#2		#3		#4		#5		#6
+#Champ1			 	wr		wr		wr		wr		wr		wr
+#Champ2
+#Try printing w/o modules since Python sucks https://docs.python.org/2/tutorial/inputoutput.html
+#If you spit out json you can probably use this: http://d3js.org/
+
+#HIGHLY UNTESTED
+champs = pd.read_csv("champs.csv")
+f = open("index.php", 'w')
+
+f.write('<!Doctype html><html></head>\n<!-- Latest compiled and minified CSS -->\n<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">\n<!-- Optional theme -->\n<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">\n<!-- Latest compiled and minified JavaScript -->\n<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script></head><body><table class="table"><thead><tr><td>Champion</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><tr><tbody>\n')
+
+for i in range(0,len(champs.index)):
+	#print(champs.iloc[i,1])#names
+	champ = matchesGroupedDF[matchesGroupedDF.champ_id==champs.iloc[i,0]]
+	champ2 = champ.set_index('champ_id')
+	champGrouped = champ2.groupby(['count'])
+	champDF = champGrouped.mean().reset_index()
+	champWR = champDF['mean'].values
+	champCount = champDF['count'].values
+	#champPage = champs.iloc[i,1] + ".html"
+	#skip more than 12 games played
+	j = 0
+	f.write('<tr><td>' + str(champs.iloc[i,1]) + '</td>')
+	for i in range(0, 12):
+		if (champCount[j] == i+1):
+			if (j != len(champCount)-2):
+				j = j + 1
+			f.write('<td>' + str(champWR[j]) + '</td>')
+		else:
+			f.write('<td>' + 'N/A' + '</td>')
+
+f.write('<tbody></table></body></html>')
+f.close()
+		
+	
+
+	
+################################END HTML TABLE#####################################
